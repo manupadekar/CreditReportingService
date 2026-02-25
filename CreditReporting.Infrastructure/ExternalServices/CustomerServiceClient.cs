@@ -8,27 +8,27 @@ namespace CreditReporting.Infrastructure.ExternalServices
     public class CustomerServiceClient : ICustomerServiceClient
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl;
 
-        public CustomerServiceClient(HttpClient httpClient, IConfiguration configuration)
+        public CustomerServiceClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _baseUrl = configuration["ExternalServices:CustomerApi"] ?? "https://localhost:7153";
         }
 
         public async Task<CustomerDto?> GetCustomerByIdAsync(int customerId)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_baseUrl}/api/Customer/{customerId}");
+                var response = await _httpClient.GetAsync($"/api/Customer/{customerId}");
+
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<CustomerApiResponse>();
                     return result?.Data;
                 }
+
                 return null;
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
@@ -41,3 +41,4 @@ namespace CreditReporting.Infrastructure.ExternalServices
         }
     }
 }
+

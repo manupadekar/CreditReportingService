@@ -32,6 +32,11 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ExternalServices:CustomerApi"]);
+});
+
 // Database Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -39,7 +44,7 @@ builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequir
 
 // Dependency Injection
 builder.Services.AddScoped<ICibilService, CibilService>();
-builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>();
+
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));

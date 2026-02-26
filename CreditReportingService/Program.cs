@@ -19,6 +19,18 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // 2. Add services to the container.
 
 // Add Rate Limiting
@@ -69,6 +81,7 @@ app.UseHttpsRedirection();
 
 // 4. Use Rate Limiting
 app.UseRateLimiter();
+app.UseCors("AllowAngular");
 
 app.UseAuthorization();
 app.MapControllers();
